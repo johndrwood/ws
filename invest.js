@@ -21,7 +21,7 @@ data.items.forEach((item) => {
                 transaction.push(formatted_detail.formatted_amount.replace('$','-').replace(',',''));
                 rows.push(transaction);
             });
-        } else if (/^(Assets sold|Sold assets to increase the cash balance)$/g.test(activity.title)) {
+        } else if (/^(Assets sold|Sold assets to increase the cash balance|Sold assets for transfer)$/g.test(activity.title)) {
             activity.formatted_details.forEach((formatted_detail) => {
                 transaction = [];
                 transaction.push(new Intl.DateTimeFormat('en-US',{day:'numeric',month:'numeric',year:'2-digit'}).format(new Date(item.iso_date + ' GMT-0500')));
