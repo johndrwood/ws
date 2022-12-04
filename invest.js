@@ -15,10 +15,17 @@ data.items.forEach((item) => {
             activity.formatted_details.forEach((formatted_detail) => {
                 transaction = [];
                 transaction.push(new Intl.DateTimeFormat('en-US',{day:'numeric',month:'numeric',year:'2-digit'}).format(new Date(item.iso_date + ' GMT-0500')));
-                transaction.push('BUY');
-                transaction.push(formatted_detail.sentence.split('<b>').pop().split('</b>')[0]);
-                transaction.push(formatted_detail.sentence.split('(').pop().split(' shares')[0]);
-                transaction.push(formatted_detail.formatted_amount.replace('$','-').replace(',',''));
+                if (formatted_detail.sentence.startsWith('Sold')) {
+                    transaction.push('SELL');
+                    transaction.push(formatted_detail.sentence.split('<b>').pop().split('</b>')[0]);
+                    transaction.push('-' + formatted_detail.sentence.split('(').pop().split(' shares')[0]);
+                    transaction.push(formatted_detail.formatted_amount.replace(/\-\$|,/g,''));
+                } else {
+                    transaction.push('BUY');
+                    transaction.push(formatted_detail.sentence.split('<b>').pop().split('</b>')[0]);
+                    transaction.push(formatted_detail.sentence.split('(').pop().split(' shares')[0]);
+                    transaction.push(formatted_detail.formatted_amount.replace('$','-').replace(',',''));
+                }
                 rows.push(transaction);
             });
         } else if (/^(Assets sold|Sold assets to increase the cash balance|Sold assets for transfer)$/g.test(activity.title)) {
